@@ -1,0 +1,6 @@
+{
+  "name": "com.gulievstudio.universal-stencil-lit-shadergraph-target",
+  "displayName": "Universal Stencil Lit ShaderGraph Target",
+  "version": "1.0.0",
+  "description": "Adds a Stencil Lit ShaderGraph SubTarget for URP, based on Lit with Fullscreen-style stencil operations"
+}
