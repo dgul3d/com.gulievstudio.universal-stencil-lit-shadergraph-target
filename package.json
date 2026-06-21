@@ -1,6 +1,19 @@
 {
   "name": "com.gulievstudio.universal-stencil-lit-shadergraph-target",
   "displayName": "Universal Stencil Lit ShaderGraph Target",
-  "version": "1.0.0",
-  "description": "Adds a Stencil Lit ShaderGraph SubTarget for URP, based on Lit with Fullscreen-style stencil operations"
+  "version": "1.1.0",
+  "unity": "2021.0",
+  "unityRelease": "0f1",
+  "description": "Adds a Stencil Lit ShaderGraph SubTarget for URP, based on Lit with Fullscreen-style stencil operations",
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "14.0.0"
+  },
+  "author": {
+    "name": "Damir Guliev",
+    "url": "https://github.com/dgul3d",
+    "email": "dguliev.mail@gmail.com"
+  },
+  "changelogUrl": "https://github.com/dgul3d/com.gulievstudio.universal-stencil-lit-shadergraph-target/blob/master/CHANGELOG.MD",
+  "documentationUrl": "https://github.com/dgul3d/com.gulievstudio.universal-stencil-lit-shadergraph-target/blob/master/README.MD",
+  "licensesUrl": "https://github.com/dgul3d/com.gulievstudio.universal-stencil-lit-shadergraph-target/blob/master/LICENSE.MD"
 }
