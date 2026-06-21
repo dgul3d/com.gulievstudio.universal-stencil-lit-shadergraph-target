@@ -1,10 +1,10 @@
 {
   "name": "com.gulievstudio.universal-stencil-lit-shadergraph-target",
-  "displayName": "Universal Stencil Lit ShaderGraph Target",
-  "version": "1.1.0",
-  "unity": "2021.0",
+  "displayName": "Universal Stencil ShaderGraph Targets",
+  "version": "1.2.0",
+  "unity": "2021.2",
   "unityRelease": "0f1",
-  "description": "Adds a Stencil Lit ShaderGraph SubTarget for URP, based on Lit with Fullscreen-style stencil operations",
+  "description": "Adds Stencil Lit and Stencil Unlit ShaderGraph SubTargets for URP, based on built-in Lit and Unlit with Fullscreen-style stencil operations",
   "dependencies": {
     "com.unity.render-pipelines.universal": "14.0.0"
   },

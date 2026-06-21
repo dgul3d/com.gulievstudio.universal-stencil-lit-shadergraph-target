@@ -1,38 +1,26 @@
 using System;
 using UnityEditor.Rendering.Universal;
-using UnityEditor.Rendering.Universal.ShaderGUI;
 using UnityEngine;
 using static Unity.Rendering.Universal.ShaderUtils;
 
 namespace UnityEditor
 {
-    class ShaderGraphStencilLitGUI : ShaderGraphStencilMaterialGUI
+    class ShaderGraphStencilUnlitGUI : ShaderGraphStencilMaterialGUI
     {
-        public MaterialProperty workflowMode;
-
         MaterialProperty[] properties;
 
         public override void FindProperties(MaterialProperty[] properties)
         {
             this.properties = properties;
 
-            var material = materialEditor?.target as Material;
-            if (material == null)
-                return;
-
             base.FindProperties(properties);
-            workflowMode = BaseShaderGUI.FindProperty(Property.SpecularWorkflowMode, properties, false);
             FindStencilProperties(properties);
         }
 
         public static void UpdateMaterial(Material material, MaterialUpdateType updateType)
         {
-            if (updateType == MaterialUpdateType.CreatedNewMaterial)
-                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.BakedEmissive;
-
             bool automaticRenderQueue = GetAutomaticQueueControlSetting(material);
             BaseShaderGUI.UpdateMaterialSurfaceOptions(material, automaticRenderQueue);
-            LitGUI.SetupSpecularWorkflowKeyword(material, out bool isSpecularWorkflow);
             BaseShaderGUI.UpdateMotionVectorKeywordsAndPass(material);
 #if ENABLE_VR && ENABLE_XR_MODULE
             BaseShaderGUI.UpdateXRMotionVectorKeywordsAndPass(material);
@@ -47,18 +35,6 @@ namespace UnityEditor
             UpdateMaterial(material, MaterialUpdateType.ModifiedMaterial);
         }
 
-        public override void DrawSurfaceOptions(Material material)
-        {
-            if (material == null)
-                throw new ArgumentNullException("material");
-
-            EditorGUIUtility.labelWidth = 0f;
-
-            if (workflowMode != null)
-                DoPopup(LitGUI.Styles.workflowModeText, workflowMode, Enum.GetNames(typeof(LitGUI.WorkflowMode)));
-            base.DrawSurfaceOptions(material);
-        }
-
         public override void DrawSurfaceInputs(Material material)
         {
             DrawShaderGraphProperties(material, properties);
@@ -68,9 +44,7 @@ namespace UnityEditor
         {
             DrawQueueControl(material);
             base.DrawAdvancedOptions(material);
-
             materialEditor.DoubleSidedGIField();
-            materialEditor.LightmapEmissionFlagsProperty(0, enabled: true, ignoreEmissionColor: true);
 
             DrawStencilProperties();
         }

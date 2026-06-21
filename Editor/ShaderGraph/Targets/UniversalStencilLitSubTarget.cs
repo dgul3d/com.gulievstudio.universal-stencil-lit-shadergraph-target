@@ -126,13 +126,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             material.SetFloat(Property.QueueOffset, 0.0f);
             material.SetFloat(Property.QueueControl, (float)BaseShaderGUI.QueueControl.Auto);
             if (enableStencil)
-            {
-                material.SetFloat(StencilProperties.Reference, StencilProperties.DefaultReference);
-                material.SetFloat(StencilProperties.Comparison, StencilProperties.DefaultComparison);
-                material.SetFloat(StencilProperties.Operation, StencilProperties.DefaultOperation);
-                material.SetFloat(StencilProperties.ReadMask, StencilProperties.DefaultReadMask);
-                material.SetFloat(StencilProperties.WriteMask, StencilProperties.DefaultWriteMask);
-            }
+                ShaderGraphStencilUtility.ApplyDefaultStencilProperties(material);
 
             if (IsSpacewarpSupported())
                 material.SetFloat(Property.XrMotionVectorsPass, 1.0f);
@@ -216,13 +210,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             collector.AddFloatProperty(Property.QueueOffset, 0.0f);
             collector.AddFloatProperty(Property.QueueControl, -1.0f);
             if (enableStencil)
-            {
-                collector.AddFloatProperty(StencilProperties.Reference, StencilProperties.DefaultReference);
-                collector.AddFloatProperty(StencilProperties.Comparison, StencilProperties.DefaultComparison);
-                collector.AddFloatProperty(StencilProperties.Operation, StencilProperties.DefaultOperation);
-                collector.AddFloatProperty(StencilProperties.ReadMask, StencilProperties.DefaultReadMask);
-                collector.AddFloatProperty(StencilProperties.WriteMask, StencilProperties.DefaultWriteMask);
-            }
+                ShaderGraphStencilUtility.CollectStencilProperties(collector);
 
             if (IsSpacewarpSupported())
                 collector.AddFloatProperty(Property.XrMotionVectorsPass, 1.0f);
@@ -473,7 +461,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     fieldDependencies = CoreFieldDependencies.Default,
 
                     // Conditional State
-                    renderStates = StencilRenderStates.WithStencil(CoreRenderStates.UberSwitchedRenderState(target, blendModePreserveSpecular), enableStencil),
+                    renderStates = ShaderGraphStencilUtility.WithStencil(CoreRenderStates.UberSwitchedRenderState(target, blendModePreserveSpecular), enableStencil),
                     pragmas = pragmas ?? CorePragmas.Forward,     // NOTE: SM 2.0 only GL
                     defines = new DefineCollection() { },
                     keywords = new KeywordCollection() { keywords },
@@ -525,7 +513,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     fieldDependencies = CoreFieldDependencies.Default,
 
                     // Conditional State
-                    renderStates = StencilRenderStates.WithStencil(CoreRenderStates.UberSwitchedRenderState(target, blendModePreserveSpecular), enableStencil),
+                    renderStates = ShaderGraphStencilUtility.WithStencil(CoreRenderStates.UberSwitchedRenderState(target, blendModePreserveSpecular), enableStencil),
                     pragmas = pragmas,
                     defines = new DefineCollection { CoreDefines.UseFragmentFog },
                     keywords = new KeywordCollection { keywords },
@@ -572,7 +560,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     fieldDependencies = CoreFieldDependencies.Default,
 
                     // Conditional State
-                    renderStates = StencilRenderStates.WithStencil(CoreRenderStates.UberSwitchedRenderState(target, blendModePreserveSpecular), enableStencil),
+                    renderStates = ShaderGraphStencilUtility.WithStencil(CoreRenderStates.UberSwitchedRenderState(target, blendModePreserveSpecular), enableStencil),
                     pragmas = CorePragmas.GBuffer,
                     defines = new DefineCollection { CoreDefines.UseFragmentFog },
                     keywords = new KeywordCollection { LitKeywords.GBuffer },
@@ -613,7 +601,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     fieldDependencies = CoreFieldDependencies.Default,
 
                     // Conditional State
-                    renderStates = StencilRenderStates.WithStencil(CoreRenderStates.Meta, enableStencil),
+                    renderStates = ShaderGraphStencilUtility.WithStencil(CoreRenderStates.Meta, enableStencil),
                     pragmas = CorePragmas.Default,
                     defines = new DefineCollection() { CoreDefines.UseFragmentFog },
                     keywords = new KeywordCollection() { CoreKeywordDescriptors.EditorVisualization },
@@ -650,7 +638,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     fieldDependencies = CoreFieldDependencies.Default,
 
                     // Conditional State
-                    renderStates = StencilRenderStates.WithStencil(CoreRenderStates.UberSwitchedRenderState(target), enableStencil),
+                    renderStates = ShaderGraphStencilUtility.WithStencil(CoreRenderStates.UberSwitchedRenderState(target), enableStencil),
                     pragmas = CorePragmas.Instanced,
                     defines = new DefineCollection(),
                     keywords = new KeywordCollection(),
@@ -689,7 +677,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     fieldDependencies = CoreFieldDependencies.Default,
 
                     // Conditional State
-                    renderStates = StencilRenderStates.WithStencil(CoreRenderStates.DepthNormalsOnly(target), enableStencil),
+                    renderStates = ShaderGraphStencilUtility.WithStencil(CoreRenderStates.DepthNormalsOnly(target), enableStencil),
                     pragmas = CorePragmas.Instanced,
                     defines = new DefineCollection(),
                     keywords = new KeywordCollection(),
@@ -729,7 +717,7 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
                     fieldDependencies = CoreFieldDependencies.Default,
 
                     // Conditional State
-                    renderStates = StencilRenderStates.WithStencil(CoreRenderStates.DepthNormalsOnly(target), enableStencil),
+                    renderStates = ShaderGraphStencilUtility.WithStencil(CoreRenderStates.DepthNormalsOnly(target), enableStencil),
                     pragmas = CorePragmas.Instanced,
                     defines = new DefineCollection(),
                     keywords = new KeywordCollection(),
@@ -929,50 +917,6 @@ namespace UnityEditor.Rendering.Universal.ShaderGraph
             };
         }
         #endregion
-
-        static class StencilProperties
-        {
-            public const string Reference = "_Stencil";
-            public const string Comparison = "_StencilComp";
-            public const string Operation = "_StencilOp";
-            public const string ReadMask = "_StencilReadMask";
-            public const string WriteMask = "_StencilWriteMask";
-
-            public const float DefaultReference = 0.0f;
-            public const float DefaultComparison = 8.0f;
-            public const float DefaultOperation = 0.0f;
-            public const float DefaultReadMask = 255.0f;
-            public const float DefaultWriteMask = 255.0f;
-        }
-
-        static class StencilRenderStates
-        {
-            const string kReference = "[_Stencil]";
-            const string kComparison = "[_StencilComp]";
-            const string kOperation = "[_StencilOp]";
-            const string kReadMask = "[_StencilReadMask]";
-            const string kWriteMask = "[_StencilWriteMask]";
-
-            public static RenderStateCollection WithStencil(RenderStateCollection renderStates, bool enableStencil)
-            {
-                var result = new RenderStateCollection();
-                result.Add(renderStates);
-
-                if (!enableStencil)
-                    return result;
-
-                result.Add(RenderState.Stencil(new StencilDescriptor()
-                {
-                    Ref = kReference,
-                    Comp = kComparison,
-                    Pass = kOperation,
-                    ReadMask = kReadMask,
-                    WriteMask = kWriteMask,
-                }));
-
-                return result;
-            }
-        }
 
         #region Includes
         static class LitIncludes
