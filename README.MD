@@ -27,6 +27,12 @@ https://github.com/dgul3d/com.gulievstudio.universal-stencil-lit-shadergraph-tar
 2. Copy `Packages/com.gulievstudio.universal-stencil-lit-shadergraph-target` into your project (for example under a local packages folder).
 3. Add it as a local package through Package Manager.
 
+## Demo
+
+![Stencil Lit and Unlit Demo](Documentation~/images/DemoStencilShaders.gif)
+
+Samples folder contains a demo scene with a basic "impossible geometry" setup with four portal materials and four object materials. Rendering order is managed by Render Queue in the material settings.
+
 ## How to use
 Create a new graph from:
 
